@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Martin Vácha">
+    <meta name="description" content="App for comparing various pc's">
+    <meta name="keywords" content="App, PC, Compare">
+
+    <title>App Name</title>
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1 class="app-header">Computer Comparison App</h1>
+    </header>
+    <main>
+        <div class="pc-container">
+            <div class="pc-container-search">
+                <input type="text" placeholder="Enter name of a computer">
+                <button>Search</button>
+            </div>
+            <div class="pc-container-window-controls-wrapper">
+                <div class="pc-container-window">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="pc-container-controls">
+                    <button class="pc-container-controls-add">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <button class="pc-container-controls-placeholder"></button>
+                </div>
+            </div>
+        </div>
+        <div class="comparator-container">
+            <div class="comparator-container-window">
+
+            </div>
+            <div class="comparator-container-controls">
+                <button class="comparator-container-controls-clear">Clear</button>
+                <button class="comparator-container-controls-reset">Reset scores</button>
+                <button class="comparator-container-controls-compare">Compare</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/61a3b44f9f.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="assets/js/main.js" type="module"></script>
+</body>
+</html>

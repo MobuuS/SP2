@@ -1,0 +1,239 @@
+:root {
+    --light-grey: #B9B6B6;
+    --custom-font: "Kdam Thmor Pro";
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+header {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    background: var(--light-grey);
+
+    width: 100%;
+    height: 100px;
+    padding-left: 20px;
+}
+
+.app-header {
+    color: white;
+    font-family: var(--custom-font);
+    font-size: 36px;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+
+    padding: 30px;
+}
+
+.pc-container, .comparator-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pc-container {
+    width: 30%;
+}
+
+
+.comparator-container {
+    width: 70%;
+}
+
+.pc-container-search, .pc-container-window, .pc-container-controls,
+.comparator-container-window, .comparator-container-controls {
+    border: solid black 2px;
+    border-radius: 15px;
+}
+
+.pc-container-search {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+}
+
+.pc-container-search input {
+    border-radius: 12px 0 0 12px;
+    border: none;
+
+    padding: 10px 20px;
+    width: 70%;
+    height: 100%;
+}
+
+.pc-container-search input:focus {
+    outline: none;
+}
+
+.pc-container-search button {
+    color: white;
+    background: dodgerblue;
+
+    font-size: 18px;
+    font-family: var(--custom-font);
+
+    border-radius: 0 12px 12px 0;
+    border: none;
+
+    height: 100%;
+    width: calc(30% + 1px);
+}
+
+.pc-container-search button:hover {
+    background: #1362ad;
+    cursor: pointer;
+}
+
+.pc-container-window-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pc-container-window {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    height: 440px;
+    padding: 10px;
+}
+
+.pc-container-window div {
+    background: #c9c9c9;
+    border-radius: 12px;
+
+    width: 100%;
+    min-height: 200px;
+}
+
+.pc-container-controls, .comparator-container-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+
+    padding: 5px;
+    height: 80px;
+}
+
+.comparator-container-controls {
+    justify-content: right;
+}
+
+
+.pc-container-controls button {
+    color: white;
+    background: dodgerblue;
+
+    width: 50%;
+
+    border-radius: 12px;
+    border: none;
+}
+
+.pc-container-controls button:hover {
+    background: #1362ad;
+}
+
+.comparator-container-controls button {
+    color: white;
+    background: dodgerblue;
+
+    font-family: var(--custom-font);
+    font-size: 16px;
+
+    width: 20%;
+
+    border-radius: 12px;
+    border: none;
+}
+
+.comparator-container-controls button:hover {
+    background: #1362ad;
+}
+
+.comparator-container-window {
+    height: 510px;
+    overflow: scroll;
+}
+
+@media screen and (max-width: 1080px) {
+    main {
+        flex-direction: column;
+    }
+
+    .pc-container, .comparator-container {
+        width: 100%;
+    }
+
+    .pc-container-search {
+        height: 50px;
+        width: 100%;
+    }
+
+    .pc-container-window-controls-wrapper {
+        flex-direction: row;
+        gap: 20px;
+
+        width: 100%;
+    }
+
+    .pc-container-window, .pc-container-controls {
+        height: 200px;
+    }
+
+    .pc-container-controls {
+        flex-direction: column;
+    }
+
+    .pc-container-controls button {
+        width: 100%;
+        height: 50%;
+    }
+
+    .pc-container-window {
+        flex-direction: row;
+
+        overflow-y: hidden;
+        overflow-x: auto;
+
+        width: 90%;
+    }
+
+    .pc-container-window div {
+        min-width: 200px;
+        min-height: 0;
+        height: 100%;
+    }
+
+    .pc-container-controls {
+        width: 10%;
+    }
+
+    .comparator-container-window {
+        height: 400px;
+    }
+
+    .comparator-container-controls {
+        height: 80px;
+    }
+
+    .comparator-container-controls button {
+        width: calc(100% / 3);
+    }
+}
