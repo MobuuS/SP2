@@ -1,6 +1,7 @@
 :root {
     --light-grey: #B9B6B6;
-    --custom-font: "Kdam Thmor Pro";
+    --custom-font: "Kdam Thmor Pro", sans-serif;
+    --box-shadow: 0 0 0.4em #d9d9d9;
 }
 
 * {
@@ -9,6 +10,7 @@
 
 body {
     margin: 0;
+    background: #fafafa;
 }
 
 header {
@@ -44,12 +46,11 @@ main {
 }
 
 .pc-container {
-    width: 30%;
+    width: 20%;
 }
 
-
 .comparator-container {
-    width: 70%;
+    width: 80%;
 }
 
 .pc-container-search, .pc-container-window, .pc-container-controls,
@@ -69,7 +70,7 @@ main {
     border: none;
 
     padding: 10px 20px;
-    width: 70%;
+    width: 80%;
     height: 100%;
 }
 
@@ -80,6 +81,7 @@ main {
 .pc-container-search button {
     color: white;
     background: dodgerblue;
+    cursor: pointer;
 
     font-size: 18px;
     font-family: var(--custom-font);
@@ -88,18 +90,12 @@ main {
     border: none;
 
     height: 100%;
-    width: calc(30% + 1px);
+    width: calc(20% + 1px);
 }
 
 .pc-container-search button:hover {
     background: #1362ad;
     cursor: pointer;
-}
-
-.pc-container-window-controls-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
 }
 
 .pc-container-window {
@@ -110,16 +106,14 @@ main {
     overflow-y: auto;
     overflow-x: hidden;
 
-    height: 440px;
+    height: 664px;
     padding: 10px;
 }
 
-.pc-container-window div {
-    background: #c9c9c9;
-    border-radius: 12px;
-
-    width: 100%;
-    min-height: 200px;
+.pc-container-window-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .pc-container-controls, .comparator-container-controls {
@@ -131,14 +125,10 @@ main {
     height: 80px;
 }
 
-.comparator-container-controls {
-    justify-content: right;
-}
-
-
 .pc-container-controls button {
     color: white;
     background: dodgerblue;
+    cursor: pointer;
 
     width: 50%;
 
@@ -150,9 +140,26 @@ main {
     background: #1362ad;
 }
 
+.comparator-container-window {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    height: 734px;
+    padding: 10px;
+}
+
+.comparator-container-controls {
+    justify-content: right;
+}
+
 .comparator-container-controls button {
     color: white;
     background: dodgerblue;
+    cursor: pointer;
 
     font-family: var(--custom-font);
     font-size: 16px;
@@ -167,10 +174,9 @@ main {
     background: #1362ad;
 }
 
-.comparator-container-window {
-    height: 510px;
-    overflow: scroll;
-}
+/*
+ *      MEDIA QUERIES
+ */
 
 @media screen and (max-width: 1080px) {
     main {
@@ -194,7 +200,7 @@ main {
     }
 
     .pc-container-window, .pc-container-controls {
-        height: 200px;
+        height: 300px;
     }
 
     .pc-container-controls {
@@ -213,12 +219,6 @@ main {
         overflow-x: auto;
 
         width: 90%;
-    }
-
-    .pc-container-window div {
-        min-width: 200px;
-        min-height: 0;
-        height: 100%;
     }
 
     .pc-container-controls {
