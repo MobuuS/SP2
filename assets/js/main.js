@@ -25,34 +25,99 @@ console.log("DEBUG: cpu table resp:", getCPUs())
 
 // Declarations
 const modal = document.getElementById("modal");
-const modalContent = document.getElementById("modal-content");
 const pcContainerWindow = document.getElementById("pc-container-window");
 const comparatorContainerWindow = document.getElementById("comparator-container-window");
 
 const searchInput = document.getElementById("search-input");
 const searchClearButton = document.getElementById("search-clear-btn");
 
-const pcAddModal = document.getElementById("pc-container-add-btn");
+const pcaddModal = document.getElementById("pc-container-add-btn");
 const modalClose = document.getElementById("modal-close-btn");
 const modalAction = document.getElementById("modal-action-btn");
 
 const clearComparatorBtn = document.getElementById("comparator-clear-btn");
 
+const STORAGE_KEY = "data";
 
-// Data Array
-const data = [];
+
+initializeLocalStorage();
 
 // Adding Banners
-syncBanner(pcContainerWindow, {
-    id: "pc-banner",
-    action: "addModal"
-});
+syncPcBanner();
+syncComparatorBanner();
 
-syncBanner(comparatorContainerWindow, {
-    id: "comparator-banner",
-    action: "addModal"
-});
+function initializeLocalStorage() {
+    const array = getArray("initializeLocalStorage");
 
+    if (array.length !== 0) {
+        console.log(`LOCAL: initializeLocalStorage: Array is not empty (${array.length}). Receiving items...`);
+        array.forEach((item) => {
+            createPcContainer(item.id, item.name, item.processor, item.graphics, item.ram, item.drive);
+        });
+        console.log("LOCAL: initializeLocalStorage: All items received. Initialization finished.")
+    } else {
+        console.log(`LOCAL: initializeLocalStorage: Array is empty ${array.length}. Initialization suspended.`)
+    }
+}
+
+/*
+ *      LOCAL STORAGE OPERATIONS
+ */
+
+function getArray(func) {
+    const array = localStorage.getItem(STORAGE_KEY);
+    
+    if (array) {
+        console.log(`LOCAL: ${func}: getArray: Array received:\n ${array}`)
+        return JSON.parse(array);
+
+    } else {
+        return [];
+    }
+}
+
+function clearArray() {
+    let array = getArray("clearArray");
+    array = [];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(array));
+}
+
+function getArrayLength() {
+    const array = getArray("getArrayLength");
+    console.log(`LOCAL: getArrayLength: Array length is ${array.length}`);
+    return array.length;
+}
+
+function addItem(item) {
+    const array = getArray("addItem");
+
+    array.push(item);
+    console.log(`LOCAL: addItem: Item ${item.name} has been added to local storage.`);
+    console.log(`LOCAL: addItem: Storage currently contains these items:\n ${array}`);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(array));
+}
+
+function getItem(index) {
+    const array = getArray("getItem");
+    return array[parseInt(index)];
+}
+
+function removeItem(id) {
+    const array = getArray("removeItem");
+    let index = 0;
+    array.forEach((item) => {
+        if (item.id === id) {
+            array.splice(index, 1);
+        } else {
+            index++;
+        }
+    });
+    console.log(`LOCAL: removeItem: Item with id ${id} has been removed from local storage.`);
+    console.log(`LOCAL: removeItem: Storage currently contains these items:\n ${array}`);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(array));
+}
 /*
  *      SEARCH LOGIC
  */
@@ -63,6 +128,7 @@ searchClearButton.addEventListener("click", clearSearch);
 
 function search(input) {
     const text = input.target.value;
+    const data = getArray("search");
     console.log(`SEARCH: searchInput Event: Input ${text} has been detected.`)
     data.forEach(data => {
         const isVisible = data.name.toLowerCase().includes(text);
@@ -73,7 +139,7 @@ function search(input) {
         } else {
             data.html.setAttribute("data-id", "item");
         }
-        syncBanner(pcContainerWindow, {id: "pc-banner", action: "addModal"})
+        syncPcBanner();
     });
 }
 
@@ -86,31 +152,64 @@ function clearSearch() {
  *      BANNER LOGIC
  */
 
-function syncBanner(parentElement, { id, action }) {
-    const items = parentElement.querySelectorAll(`[data-id="item"]`);
-    let banner = parentElement.querySelector(`#${id}`);
+function syncPcBanner() {
+    const items = pcContainerWindow.querySelectorAll(`[data-id="item"]`);
+    let banner = pcContainerWindow.querySelector("#pc-banner");
 
     if (!banner) {
+        console.log("BANNER: syncPcBanner: No Banner registered. Creating new Banner...")
         banner = document.createElement("div");
-        banner.id = id;
-        parentElement.appendChild(banner);
-        console.log(`BANNER: syncBanner: Base of Banner for ${parentElement.className} created.`)
+        banner.id = "pc-banner";
+        pcContainerWindow.appendChild(banner);
+        console.log(`BANNER: syncPcBanner: Base of Banner for ${pcContainerWindow.className} created.`)
     }
-    if (items.length === 0 ) {
-        banner.classList.add("no-items-banner")
-        banner.classList.remove("items-banner")
+    if (items.length === 0) {
+        console.log(`BANNER: syncPcBanner: No items registered (${items.length}). Applying no-items-banner...`)
+        banner.classList.add("no-items-banner");
+        banner.classList.remove("items-banner");
         banner.innerHTML = `
             <div class="no-items-banner-text">No items found</div>
-                <button class="no-items-banner-action-btn" data-action="${action}">
+                <button class="no-items-banner-action-btn" data-action="addModal">
                     <i class="fa-solid fa-plus"></i>
-            </button>`;
+                </button>`;
+        console.log("BANNER: syncPcBanner: no-items-banner applied.")
     } else {
-        banner.classList.add("items-banner")
-        banner.classList.remove("no-items-banner")
+        console.log(`BANNER: syncPcBanner: Items (${items.length}) registered. Applying items-banner...`)
+        banner.classList.add("items-banner");
+        banner.classList.remove("no-items-banner");
         banner.innerHTML = `
-            <button class="items-banner-action-btn" data-action="${action}">
+            <button class="items-banner-action-btn" data-action="addModal">
                     <i class="fa-solid fa-plus"></i>
             </button>`;
+        console.log("BANNER: syncPcBanner: items-banner applied.")
+    }
+}
+
+function syncComparatorBanner() {
+    const items = comparatorContainerWindow.querySelectorAll(`[data-id="item"]`);
+    let banner = comparatorContainerWindow.querySelector("#comparator-banner");
+
+    if (!banner) {
+        console.log("BANNER: syncComparatorBanner: No Banner registered. Creating new Banner...")
+        banner = document.createElement("div");
+        banner.id = "comparator-banner";
+        comparatorContainerWindow.appendChild(banner);
+        console.log(`BANNER: syncComparatorBanner: Base of Banner for ${comparatorContainerWindow.className} created.`)
+    }
+
+    if (items.length === 0) {
+        console.log(`BANNER: syncComparatorBanner: No items registered (${items.length}). Applying no-items-banner...`)
+        banner.classList.add("no-items-banner");
+        banner.classList.remove("items-banner");
+        banner.innerHTML = `
+            <div class="no-items-banner-text">No items found</div>`;
+        console.log("BANNER: syncComparatorBanner: no-items-banner applied.")
+    } else {
+        console.log(`BANNER: syncComparatorBanner: Items (${items.length}) registered. Applying items-banner...`)
+        banner.classList.add("items-banner");
+        banner.classList.remove("no-items-banner");
+        banner.innerHTML = `<div></div>`;
+        console.log("BANNER: syncComparatorBanner: items-banner applied.")
     }
 }
 
@@ -118,7 +217,7 @@ function syncBanner(parentElement, { id, action }) {
  *      MODAL WINDOW LOGIC
  */
 
-pcAddModal.addEventListener("click", addModal);
+pcaddModal.addEventListener("click", addModal);
 modalClose.addEventListener("click", closeModal);
 modalAction.addEventListener("click", actionModal);
 
@@ -126,25 +225,11 @@ modalAction.addEventListener("click", actionModal);
 function addModal(){
     modal.classList.add("active");
     console.log("MODAL: addModal: pc-modal state set to Active");
-    modalContent.innerHTML = `
-        <label for="input-name">Name</label>
-        <input id="input-name" type="text" placeholder="Enter name of your PC..."><br>
-        <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></div>
-        <label for="input-processor">Processor</label>
-        <input id="input-processor" type="text" placeholder="Intel Core i9 12500H"><br>
-        <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></div>
-        <label for="input-graphics-card">Graphics</label>
-        <input id="input-graphics-card" type="text" placeholder="Nvidia RTX 3080Ti"><br>
-        <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></i></div>
-        <label for="input-ram">RAM</label>
-        <input id="input-ram" type="text" placeholder="Kingston FURY 16GB DDR4"><br>  
-        <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></i></div>
-        <label for="input-boot-drive">Boot Drive</label>
-        <input id="input-boot-drive" type="text" placeholder="Samsung 990 EVO Plus 1TB">
-        <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></i></div>
-        <div id="modal-error" class="modal-error"></div>       
-    `;
-    console.log("MODAL: addModal: Content for modal window created")
+}
+
+function closeModal() {
+    modal.classList.remove("active");
+    console.log("MODAL: closeModal: pc-modal state set to Remove");
 }
 
 function actionModal(){
@@ -162,46 +247,68 @@ function actionModal(){
         return;
     }
 
-    const id = data.length.toString();
+    const id = getArrayLength().toString();
     console.log(`MODAL: modalAction: Unique id ${id} created`);
 
-    /* Creating and appending an element with class pc-container-window-item */
-    const item = document.createElement("div");
-    item.id = id;
-    item.setAttribute("data-id", "item")
-    item.classList.add("pc-container-window-item");
-    item.innerHTML =  `
+    const element = createPcContainer(id, inputName, inputProcessor, inputGraphicsCard, inputRAM, inputBootDrive);
+
+    addItem({id: id, name: inputName, processor: inputProcessor,
+        graphics: inputGraphicsCard, ram: inputRAM, drive: inputBootDrive,
+        html: element});
+
+    const item = getItem(id);
+    console.log(`MODAL: actionModal: Unique id ${id} has been assigned to item ${item.name}`)
+    console.log("MODAL: actionModal: Imputed data saved to local storage as:", item)
+
+    modal.classList.remove("active");
+    console.log("MODAL: actionModal: pc-modal state set to Remove");
+
+    syncPcBanner();
+
+    createPopUp(`Computer ${inputName} has been created!`, "rgb(64, 218, 89)")
+}
+
+function createPcContainer(id, name, processor, graphics, ram, drive) {
+    const element = document.createElement("div");
+    element.id = id;
+    element.setAttribute("data-id", "item")
+    element.classList.add("pc-container-window-item");
+    element.innerHTML =  `
         <span data-action="removePcItem" class="item-close-btn">&times;</span>
-        <div class="item-name" data-field="name">${inputName}</div>
+        <div class="item-name" data-field="name">${name}</div>
         <div class="item-body">           
-            <div data-field="processor">${inputProcessor}</div>
-            <div data-field="graphics">${inputGraphicsCard}</div>
-            <div data-field="ram">${inputRAM}</div>
-            <div data-field="boot-drive">${inputBootDrive}</div>
+            <div data-field="processor">${processor}</div>
+            <div data-field="graphics">${graphics}</div>
+            <div data-field="ram">${ram}</div>
+            <div data-field="boot-drive">${drive}</div>
         </div>
         <button data-action="comparePcItem" class="item-action-btn">Compare</button>
     `;
 
-    data.push({id: id, name: inputName, processor: inputProcessor,
-        graphics: inputGraphicsCard, ram: inputRAM, drive: inputBootDrive,
-        html: item});
-    console.log("MODAL: modalAction: Imputed data saved as:", data[id])
-
-    pcContainerWindow.prepend(item);
-    console.log(`MODAL: modalAction: pc-item Created: \n${item.outerHTML}`);
-
-    modal.classList.remove("active");
-    console.log("MODAL: modalAction: pc-modal state set to Remove");
-
-    syncBanner(pcContainerWindow, {
-        id: "pc-banner",
-        action: "addModal"
-    });
+    pcContainerWindow.prepend(element);
+    console.log(`MODAL: actionModal: pc-item Created: \n${element.outerHTML}`);
+    return element;
 }
 
-function closeModal() {
-    modal.classList.remove("active");
-    console.log("MODAL: closeModal: pc-modal state set to Remove");
+/*
+ *      POP-UP WINDOW LOGIC
+ */
+
+function createPopUp(text, color) {
+    const popUp = document.getElementById("pop-up");
+    const popUpBox = document.getElementById("pop-up-box");
+    const popUpText = document.getElementById("pop-up-text");
+
+    popUpText.textContent = text;
+
+    popUp.classList.add("active");
+    popUpBox.style.background = color;
+    console.log(`POPUP: createPopUp: Pop-up created. ${text} has been displayed`)
+
+    setTimeout(() => {
+        popUp.classList.remove("active")
+        console.log(`POPUP: createPopUp: Pop-up removed.`)
+    }, 2000);
 }
 
 /*
@@ -217,35 +324,36 @@ function pcContainerActions(e){
     if (!btn) return;
     // Reading an action attached to the button
     const action = btn.dataset.action;
-    console.log(`PC-ITEM: pc-container-window-item: Action \"${action}\" detected`)
+    console.log(`PC-ITEM: pcContainerActions: Action \"${action}\" detected`)
 
+    const parent = e.target.parentElement;
     if (action === "addModal") {
+        console.log(`PC-ITEM: pcContainerActions: addModal() initiated`);
         addModal();
     }
 
     if (action === "removePcItem") {
-        e.target.parentElement.remove();
-        console.log("PC-ITEM: pcContainerActions: pc-container-window-item Removed");
-        syncBanner(pcContainerWindow, {id: "pc-banner", action: "addModal"});
+        console.log(`PC-ITEM: pcContainerActions: removePcItem initiated`);
+        removePcItem(parent);
     }
 
     if (action === "comparePcItem") {
-        console.log(`PC-ITEM: pcContainerActions: Action ${action} commited`);
+        console.log(`PC-ITEM: pcContainerActions: comparePcItem initiated`);
 
-        const parentID = e.target.parentElement.id;
-        console.log(`PC-ITEM: pcContainerActions: ID ${parentID} received`);
+        console.log(`PC-ITEM: pcContainerActions: ID ${parent.id} received`);
+        const item = getItem(parent.id);
 
-        const item = document.createElement("div");
-        item.classList.add("comparator-container-window-item");
-        item.setAttribute("data-id", "item")
-        item.innerHTML =  `
+        const element = document.createElement("div");
+        element.classList.add("comparator-container-window-item");
+        element.setAttribute("data-id", "item")
+        element.innerHTML =  `
             <span data-action="remove" class="item-close-btn">&times;</span>
-            <div class="item-name">${data[parentID].name}</div>
+            <div class="item-name">${item.name}</div>
             <div class="item-body">
-                <div>${data[parentID].processor}</div>
-                <div>${data[parentID].graphics}</div>
-                <div>${data[parentID].ram}</div>
-                <div>${data[parentID].drive}</div>
+                <div>${item.processor}</div>
+                <div>${item.graphics}</div>
+                <div>${item.ram}</div>
+                <div>${item.drive}</div>
             </div>
             <div class="item-score-container">
                 <div class="score-title">Score</div>
@@ -253,16 +361,18 @@ function pcContainerActions(e){
             </div>           
         `;
 
-        comparatorContainerWindow.prepend(item);
-        console.log(`PC-ITEM: pcContainerActions: ${item.className} created:`, item.outerHTML);
-        syncBanner(comparatorContainerWindow, {id: "comparator-banner", action: "addModal"});
+        comparatorContainerWindow.prepend(element);
+        console.log(`PC-ITEM: pcContainerActions: ${element.className} created:`, element.outerHTML);
+        syncComparatorBanner();
     }
 }
 
-function removePcItem(e) {
-    const parent = e.target.parentElement;
+function removePcItem(parent) {
     parent.remove();
-    console.log(`PC-ITEM: removePcItem: Parent element ${parent.className} removed`)
+    removeItem(parent.id)
+    console.log(`PC-ITEM: removePcItem: Parent element ${parent.className} with id=${parent.id} removed`)
+    createPopUp("Computer has been removed!", "rgb(204,62,62)");
+    syncPcBanner();
 }
 
 /*
@@ -277,17 +387,17 @@ function comparatorContainerActions(e) {
     if (!btn) return;
 
     const action = btn.dataset.action;
-    console.log(`CO-ITEM: comparator-container-window-item: Action \"${action}\" detected`)
+    console.log(`CO-ITEM: comparatorContainerActions: Action \"${action}\" detected`)
 
     if (action === "remove") {
         e.target.parentElement.remove();
-        console.log("CO-ITEM: comparator-container-window-item remove-btn: comparator-container-window-item Removed");
-        syncBanner(pcContainerWindow, {id: "comparator-banner", action: "addModal"});
+        console.log("CO-ITEM: comparatorContainerActions remove-btn: comparator-container-window-item Removed");
+        syncComparatorBanner();
     }
 }
 
 function clearComparator() {
     comparatorContainerWindow.innerHTML = "";
     console.log(`CO-ITEM: clearComparator: ${comparatorContainerWindow.className} has been cleared`)
-    syncBanner(comparatorContainerWindow, {id: "comparator-banner", action: "addModal"})
+    syncComparatorBanner();
 }

@@ -53,18 +53,40 @@
     </main>
 
     <div class="modal-overlay" id="modal">
-        <div class="modal">
+        <div  class="modal">
             <div class="modal-header">
-                <div class="modal-title">Create a new Computer</div>
+                <div id="modal-title" class="modal-title">Create a new Computer</div>
                 <span  id="modal-close-btn" class="modal-close-btn">&times;</span>
             </div>
-
             <div id="modal-content" class="modal-content">
-                <!-- DYNAMIC CONTENT -->
+
+                <label for="input-name">Name</label>
+                <input id="input-name" type="text" placeholder="Enter name of your PC..."><br>
+                <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></div>
+                <label for="input-processor">Processor</label>
+                <input id="input-processor" type="text" placeholder="Intel Core i9 12500H"><br>
+                <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></div>
+                <label for="input-graphics-card">Graphics</label>
+                <input id="input-graphics-card" type="text" placeholder="Nvidia RTX 3080Ti"><br>
+                <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></i></div>
+                <label for="input-ram">RAM</label>
+                <input id="input-ram" type="text" placeholder="Kingston FURY 16GB DDR4"><br>
+                <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></i></div>
+                <label for="input-boot-drive">Boot Drive</label>
+                <input id="input-boot-drive" type="text" placeholder="Samsung 990 EVO Plus 1TB">
+                <div class="circle-signal"><i class="fa-regular fa-circle-question"></i></i></div>
+                <div id="modal-error" class="modal-error"></div>
             </div>
             <button id="modal-action-btn" class="modal-action-btn">Add</button>
         </div>
     </div>
+
+    <div id="pop-up" class="pop-up-overlay">
+        <div id="pop-up-box" class="pop-up-box">
+            <div id="pop-up-text"></div>
+        </div>
+    </div>
+
 
     <script src="https://kit.fontawesome.com/61a3b44f9f.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
